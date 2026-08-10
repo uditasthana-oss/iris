@@ -1,4 +1,21 @@
-// IRIS optimizer - Fused CUDA kernel
+/* 
+                --------------------------------------
+                  IRIS optimizer - Fused CUDA kernel
+                --------------------------------------
+    This is a note added to be honest about the contributions of Claude 
+    in this kernel. Yes, I styled the CUDA KERNEL headline in a bar as well.
+
+    What I did --> the main algorithm was written by me. Completely.
+    What I and claude both did --> The single tensor entry points was
+        written by me but laden with bugs, so claude fixed the bias accumulator math and
+        the proper entry point.
+    What claude did --> initially, I was having an error when compiling the extension, and that error 
+        had to do with atomicity, and atomic addition. That was fixed by claude, when compiled. Claude also wrote
+        the multi tensor entry point inspired from the single tensor entry point.
+
+    That being said, I do plan on writing a fused kernel myself from start to finish without the assistance of claude, like I wrote the
+    functional and optimizer myself.
+*/
 #include <torch/extension.h>
 #include <ATen/ATen.h>
 #include <ATen/cuda/CUDAContext.h>

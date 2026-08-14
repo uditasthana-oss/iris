@@ -3,7 +3,8 @@ IRIS Fused CUDA Kernel Module
 ================================
 This module provides the compiled CUDA extension for fused IRIS operations.
 
-The extension is built from fused_iris_kernel.cu and provides:
+The extension is built from pybind_iris.cpp + fused_iris_kernel.cu +
+multi_tensor_iris_kernel.cu and provides:
 - iris_fused_cuda: Single-tensor fused IRIS update
 - iris_multi_tensor_fused_cuda: Multi-tensor fused IRIS update
 """

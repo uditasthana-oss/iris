@@ -145,18 +145,24 @@ def compile_cuda_extension():
         import os
         
         current_dir = os.path.dirname(os.path.abspath(__file__))
-        kernel_path = os.path.join(current_dir, "fused_iris", "iris_fused_kernel.cu")
-        
-        if not os.path.exists(kernel_path):
+        fused_dir = os.path.join(current_dir, "fused_iris")
+        sources = [
+            os.path.join(fused_dir, "pybind_iris.cpp"),
+            os.path.join(fused_dir, "fused_iris_kernel.cu"),
+            os.path.join(fused_dir, "multi_tensor_iris_kernel.cu"),
+        ]
+        missing = [p for p in sources if not os.path.exists(p)]
+        if missing:
             raise FileNotFoundError(
-                f"CUDA kernel source not found at {kernel_path}"
+                f"CUDA kernel source not found: {missing}"
             )
         
         print("Building IRIS fused CUDA kernel...")
         
         fused_iris = load(
             name="fused_iris_kernel",
-            sources=[kernel_path],
+            sources=sources,
+            extra_include_paths=[fused_dir],
             extra_cuda_cflags=["-O3", "--use_fast_math"],
             verbose=True
         )

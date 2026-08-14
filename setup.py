@@ -23,8 +23,13 @@ try:
                 # Module name for import: from iris.fused_iris import fused_iris_kernel
                 name='iris.fused_iris.fused_iris_kernel',
                 # Path relative to setup.py (package root)
-                sources=['fused_iris/fused_iris_kernel.cu'],
-                
+                sources=[
+                    'fused_iris/pybind_iris.cpp',
+                    'fused_iris/fused_iris_kernel.cu',
+                    'fused_iris/multi_tensor_iris_kernel.cu',
+                ],
+                include_dirs=[os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                           'fused_iris')],
                 extra_compile_args={
                     'cxx': ['-O3', '-std=c++17'],
                     'nvcc': [

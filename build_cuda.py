@@ -32,25 +32,20 @@ def build_cuda_extension():
     
     # Find the CUDA source file
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    cuda_source = os.path.join(script_dir, "fused_iris", "fused_iris_kernel.cu")
+    fused_dir = os.path.join(script_dir, "fused_iris")
+    sources = [
+        os.path.join(fused_dir, "pybind_iris.cpp"),
+        os.path.join(fused_dir, "fused_iris_kernel.cu"),
+        os.path.join(fused_dir, "multi_tensor_iris_kernel.cu"),
+    ]
     
-    if not os.path.exists(cuda_source):
-        print(f"✗ Error: CUDA source file not found at {cuda_source}")
+    missing = [p for p in sources if not os.path.exists(p)]
+    if missing:
+        print(f"✗ Error: CUDA source file not found: {missing}")
         print(f"  Current directory: {script_dir}")
-        print(f"  Please ensure your directory structure is:")
-        print(f"    iris/")
-        print(f"    |-- fused_iris/")
-        print(f"    |   |-- __init__.py")
-        print(f"    |   `-- fused_iris_kernel.cu")
-        print(f"    |-- __init__.py")
-        print(f"    |-- build_cuda.py")
-        print(f"    |-- diagnose_complete.py")
-        print(f"    |-- functional.py")
-        print(f"    |-- fused.py")
-        print(f"    `-- optimizer.py")
         return False
     
-    print(f"✓ Found CUDA source: {cuda_source}")
+    print(f"✓ Found fused IRIS sources in {fused_dir}")
     
     try:
         from torch.utils.cpp_extension import load
@@ -63,12 +58,13 @@ def build_cuda_extension():
         # Build the extension
         iris_cuda = load(
             name='fused_iris_kernel',
-            sources=[cuda_source],
-            extra_cflags=['-O3', '-std=c++14'],
+            sources=sources,
+            extra_include_paths=[fused_dir],
+            extra_cflags=['-O3', '-std=c++17'],
             extra_cuda_cflags=[
                 '-O3',
                 '--use_fast_math',
-                '-std=c++14',
+                '-std=c++17',
                 '--expt-relaxed-constexpr',
             ],
             verbose=True,

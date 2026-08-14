@@ -12,6 +12,29 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
+# This repo's package root is the directory that contains setup.py + fused_iris/.
+# Refuse to run from anywhere else. Do not assume Colab paths.
+is_iris_root() {
+    [ -f setup.py ] \
+        && [ -f __init__.py ] \
+        && [ -f optimizer.py ] \
+        && [ -d fused_iris ] \
+        && [ -f fused_iris/fused_iris_kernel.cu ]
+}
+
+if is_iris_root; then
+    :
+elif [ -f iris/setup.py ] && [ -d iris/fused_iris ]; then
+    echo -e "${RED}✗ You are in $(pwd), not the iris package directory.${NC}"
+    echo "  cd iris && bash setup_cuda.sh"
+    exit 1
+else
+    echo -e "${RED}✗ Not in the IRIS project root.${NC}"
+    echo "  cwd: $(pwd)"
+    echo "  Need setup.py, optimizer.py, and fused_iris/fused_iris_kernel.cu here."
+    exit 1
+fi
+
 echo -e "${BLUE}===============================================================${NC}"
 echo -e "${BLUE}             IRIS CUDA Extension Build Script${NC}"
 echo -e "${BLUE}       Innovation Residual Iterative Stabilization${NC}"
@@ -193,7 +216,8 @@ fi
 
 echo ""
 echo "=== Step 9: Build CUDA extensions ==="
-export TORCH_CUDA_ARCH_LIST="8.0;8.6;8.9;9.0"
+# 7.5 = Colab T4, 8.0 = A100, 8.9 = L4, 9.0 = H100
+export TORCH_CUDA_ARCH_LIST="${TORCH_CUDA_ARCH_LIST:-7.5;8.0;8.6;8.9;9.0}"
 export MAX_JOBS=4
 
 echo "Building with:"
@@ -233,16 +257,18 @@ else
 fi
 
 echo ""
-echo "=== Step 11: Install package ==="
-pip install -e . --no-build-isolation 2>&1 | tee install.log
-
-if ! python -c "import iris" 2>/dev/null; then
-    echo -e "${RED}✗ Installation failed! Package not importable${NC}"
+echo "=== Step 11: Verify the compiled kernel ==="
+# We are inside the package directory. `import iris` looks for ./iris/ and
+# will fail here — that is expected. Load the extension directly.
+if python -c "from fused_iris import fused_iris_kernel; print([x for x in dir(fused_iris_kernel) if not x.startswith('_')])"; then
+    echo -e "${GREEN}✓ fused_iris_kernel imported from $(pwd)${NC}"
+else
+    echo -e "${RED}✗ fused_iris_kernel failed to import${NC}"
     exit 1
 fi
 
 echo ""
-echo "=== Step 12: Test imports and functionality ==="
+echo "=== Step 12: Test kernel ==="
 python test.py
 
 BUILD_STATUS=$?

@@ -37,9 +37,10 @@ try:
                         '--use_fast_math',
                         '-std=c++17',
                         '--expt-relaxed-constexpr',
+                        '-gencode', 'arch=compute_75,code=sm_75',  # Colab T4
                         '-gencode', 'arch=compute_80,code=sm_80',  # A100
                         '-gencode', 'arch=compute_86,code=sm_86',  # RTX 3090
-                        '-gencode', 'arch=compute_89,code=sm_89',  # RTX 4090
+                        '-gencode', 'arch=compute_89,code=sm_89',  # L4 / 4090
                         '-gencode', 'arch=compute_90,code=sm_90',  # H100
                     ]
                 }

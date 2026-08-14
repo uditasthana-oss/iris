@@ -2,12 +2,24 @@
 
 import torch
 from torch import Tensor
-from torch.optim.optimizer import (
-    Optimizer,
-    ParamsT,
-    _get_scalar_dtype,
-    _use_grad_for_differentiable,
-)
+from torch.optim.optimizer import Optimizer
+
+try:
+    from torch.optim.optimizer import ParamsT
+except ImportError:  # older PyTorch
+    from typing import Any as ParamsT
+
+try:
+    from torch.optim.optimizer import _get_scalar_dtype
+except ImportError:  # private helper removed/moved in some torch versions
+    def _get_scalar_dtype(is_fused=False):
+        return torch.float32
+
+try:
+    from torch.optim.optimizer import _use_grad_for_differentiable
+except ImportError:
+    def _use_grad_for_differentiable(func):
+        return func
 from typing import List, Tuple, Optional
 
 from .functional import iris

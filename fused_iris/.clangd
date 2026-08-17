@@ -1,0 +1,14 @@
+CompileFlags:
+  Compiler: clang++
+  Add:
+    - --cuda-path=/opt/cuda
+    - --cuda-gpu-arch=sm_80
+    - --cuda-host-only
+    - -std=c++17
+    - -xcuda
+    - -Wno-unknown-cuda-version
+    - -I.
+    - -Iinclude
+    - -I/opt/cuda/include
+    - -I/opt/cuda/targets/x86_64-linux/include
+    - -I/usr/lib/python3.14/site-packages/torch/include/torch/csrc/api/include

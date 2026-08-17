@@ -48,8 +48,11 @@ class IRIS(Optimizer):
         eps: Numerical stability constant (default: 1e-8)
         amsgrad: Use AMSGrad variant (default: False)
         differentiable: Make optimizer differentiable (default: False)
-        foreach: Use multi-tensor operations (default: None, auto-detect)
-        fused: Use fused CUDA kernel (default: False)
+        foreach: Use multi-tensor operations (default: None, auto-detect).
+            Combined with fused=True, launches the multi-tensor fused kernel.
+        fused: Use fused CUDA kernel (default: False).
+            fused=True and foreach=True  -> multi_tensor fused kernel (one launch)
+            fused=True and foreach=False -> single-tensor fused kernel (one launch per tensor)
 
     Example:
         >>> optimizer = IRIS(model.parameters(), lr=3e-3)

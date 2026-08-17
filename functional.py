@@ -5,7 +5,11 @@ import torch
 from torch import Tensor
 from torch.optim.optimizer import _get_value
 
-from .fused import _fused_iris, is_fused_available
+from .fused import (
+    _multi_tensor_fused_iris,
+    _single_tensor_fused_iris,
+    is_fused_available,
+)
 
 def iris(
     params: List[Tensor],
@@ -87,22 +91,27 @@ def iris(
 
     if foreach is None:
         foreach = not torch.jit.is_scripting()
-    
+
+    # fused + foreach -> one multi-tensor CUDA launch
+    # fused only        -> one single-tensor CUDA launch per parameter
+    # foreach only      -> PyTorch _foreach_* path
+    # neither           -> Python per-tensor loop
     if fused:
         if is_fused_available() and not has_complex:
-            func = _fused_iris
+            func = _multi_tensor_fused_iris if foreach else _single_tensor_fused_iris
         else:
+            fallback = "foreach" if foreach else "single-tensor"
             if has_complex:
                 warnings.warn(
-                    "IRIS: fused=True with complex parameters, falling back to foreach",
+                    f"IRIS: fused=True with complex parameters, falling back to {fallback}",
                     RuntimeWarning,
                 )
             else:
                 warnings.warn(
-                    "IRIS: fused=True but CUDA extension unavailable, falling back to foreach",
+                    f"IRIS: fused=True but CUDA extension unavailable, falling back to {fallback}",
                     RuntimeWarning,
                 )
-            func = _multi_tensor_iris
+            func = _multi_tensor_iris if foreach else _single_tensor_iris
     elif foreach:
         func = _multi_tensor_iris
     else:

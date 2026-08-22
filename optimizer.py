@@ -62,14 +62,13 @@ class IRIS(Optimizer):
 
     Reference:
         IRIS: Innovation Residual Iterative Stabilization
-        https://arxiv.org/abs/XXXX.XXXXX
     """
 
     def __init__(
         self,
         params: ParamsT,
         lr: float = 3e-3,
-        betas: Tuple[float, float, float] = (0.98, 0.92, 0.9995),
+        betas: Tuple[float, float, float] = (0.96, 0.92, 0.9995),
         snr_threshold: Optional[float] = None,
         weight_decay: float = 0.01,
         eps: float = 1e-8,

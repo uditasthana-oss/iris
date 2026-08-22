@@ -296,20 +296,20 @@ def _multi_tensor_iris(
     
     # Process each device group
     for (device, dtype, is_complex), tensors in grouped_tensors.items():
-        device_params    = tensors['params']
-        device_grads     = tensors['grads']
+        device_params = tensors['params']
+        device_grads = tensors['grads']
         device_grad_ests = tensors['grad_estimates']
-        device_var_ests  = tensors['variance_estimates']
+        device_var_ests = tensors['variance_estimates']
         device_max_var_ests = tensors['max_variance_estimates']
         device_innov_res = tensors['innovation_residuals']
         device_state_steps = tensors['state_steps']
         
         # Handle complex tensors
         if is_complex:
-            device_params    = [torch.view_as_real(p) for p in device_params]
-            device_grads     = [torch.view_as_real(g) for g in device_grads]
+            device_params = [torch.view_as_real(p) for p in device_params]
+            device_grads = [torch.view_as_real(g) for g in device_grads]
             device_grad_ests = [torch.view_as_real(m) for m in device_grad_ests]
-            device_var_ests  = [torch.view_as_real(s) for s in device_var_ests]
+            device_var_ests = [torch.view_as_real(s) for s in device_var_ests]
             if amsgrad:
                 device_max_var_ests = [torch.view_as_real(s) for s in device_max_var_ests]
             device_innov_res = [torch.view_as_real(s) for s in device_innov_res]

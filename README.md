@@ -12,7 +12,7 @@ from iris import IRIS
 optimizer = IRIS(
     model.parameters(),
     lr=3e-3,
-    betas=(0.96, 0.92, 0.9995),    # vision defaults
+    betas=(0.96, 0.92, 0.9995),    # defaults
     weight_decay=0.01
 )
 
@@ -293,7 +293,7 @@ from iris import IRIS
 optimizer = IRIS(
     model.parameters(),
     lr=3e-3,
-    betas=(0.98, 0.92, 0.99),
+    betas=(0.95, 0.92, 0.9995),
     weight_decay=0.01,
     eps=1e-8
 )
@@ -347,7 +347,7 @@ for epoch in range(num_epochs):
 
 **Learning rate:** `3e-3` to `1e-2` has worked well in the vision settings tested. IRIS has shown stable training at learning rates that visibly degrade AdamW — but this has only been tested on CIFAR-scale vision.
 
-**Betas** (default: `0.98, 0.92, 0.99`):
+**Betas** (default: `0.96, 0.92, 0.9995`):
 - `beta1`: gradient estimate EMA — higher = smoother
 - `beta2`: must sit 0.15–0.25 below `beta1` — design constraint, not tuning suggestion
 - `beta3`: variance EMA — higher = more stable denominator

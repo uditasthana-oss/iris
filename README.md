@@ -83,8 +83,8 @@ All runs use the same architecture, dataset, and seed. Configs differ only in op
 
 #### IRIS vs AdamW vs AdaBelief
 
-![Test Accuracy — IRIS vs AdamW vs AdaBelief](plots/AdamFam-vs-IRIS-acc.png)
-![Test Loss — IRIS vs AdamW vs AdaBelief](plots/AdamFam-vs-IRIS-loss.png)
+![Test Accuracy — IRIS vs AdamW vs AdaBelief](plots/CIFAR-100_RESNET-18/AdamFam-vs-IRIS-acc.png)
+![Test Loss — IRIS vs AdamW vs AdaBelief](plots/CIFAR-100_RESNET-18/AdamFam-vs-IRIS-loss.png)
 
 | Optimizer | LR | WD | Final Acc | Peak Acc | Final Loss | First ≥70% | First ≥73% | First ≥74% |
 |-----------|----|----|-----------|----------|------------|------------|------------|------------|
@@ -125,7 +125,7 @@ In the first 10–50 epochs of both runs, AdamW briefly led IRIS on accuracy (wo
 
 #### Early IRIS — large LR stress test
 
-![Early IRIS vs AdamW loss (lr=0.018 vs lr=0.003)](plots/OLD-IRIS-vs-AdamW-loss.png)
+![Early IRIS vs AdamW loss (lr=0.018 vs lr=0.003)](plots/CIFAR-100_RESNET-18/OLD-IRIS-vs-AdamW-loss.png)
 
 An earlier run tested IRIS at `lr=0.018` against AdamW at `lr=0.003` — a **6× learning rate gap**. IRIS continued descending while AdamW plateaued, reaching substantially lower final loss. This was a preliminary result before the configs above were settled, included here as context for the LR robustness story, not as a primary result.
 

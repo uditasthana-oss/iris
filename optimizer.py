@@ -118,9 +118,9 @@ class IRIS(Optimizer):
         super().__setstate__(state)
         for group in self.param_groups:
             group.setdefault("amsgrad", False)
-            group.setdefault("beta1", 0.98)
+            group.setdefault("beta1", 0.96)
             group.setdefault("beta2", 0.92)
-            group.setdefault("beta3", 0.99)
+            group.setdefault("beta3", 0.9995)
             group.setdefault("rho", None)
             group.setdefault("weight_decay", 0.01)
             group.setdefault("eps", 1e-8)
